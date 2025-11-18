@@ -1,0 +1,12 @@
+# Configuração Nixpacks para servidor de instalação iOS
+[phases.setup]
+nixPkgs = ["nodejs_18", "npm-9_x"]
+
+[phases.install]
+cmds = ["npm install --production"]
+
+[phases.build]
+cmds = []
+
+[start]
+cmd = "npm start"

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Instalar Clerky</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #101827 0%, #1e293b 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            border-radius: 25px;
+            background: #00a884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            box-shadow: 0 10px 30px rgba(0, 168, 132, 0.3);
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        
+        .install-button {
+            display: inline-block;
+            background: #00a884;
+            color: #fff;
+            padding: 18px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 168, 132, 0.4);
+        }
+        
+        .install-button:hover {
+            background: #00c896;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 168, 132, 0.5);
+        }
+        
+        .install-button:active {
+            transform: translateY(0);
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            text-align: left;
+        }
+        
+        .instructions h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #00a884;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+        
+        .qr-code {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        
+        .qr-code img {
+            max-width: 200px;
+            width: 100%;
+            border-radius: 10px;
+        }
+        
+        .version {
+            margin-top: 30px;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .auto-register {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .auto-register h2 {
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+        
+        .udid-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .udid-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .action-button {
+            display: inline-block;
+            background: #10b981;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        
+        .action-button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            display: none;
+        }
+        
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .status-message.show {
+            display: block;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+            
+            .install-button {
+                padding: 15px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            📱
+        </div>
+        
+        <h1>Clerky</h1>
+        <p class="subtitle">Gerencie seus contatos e mensagens do WhatsApp</p>
+        
+        <!-- Botão de instalação -->
+        <a href="itms-services://?action=download-manifest&url=https://clerky-site-clerky-install.o31xjg.easypanel.host/manifest.plist" 
+           class="install-button" 
+           id="installButton">
+            📥 Instalar App
+        </a>
+        
+        <div class="instructions">
+            <h2>📋 Como Instalar</h2>
+            <ol>
+                <li>Toque no botão <strong>"Instalar App"</strong> acima</li>
+                <li>Se aparecer um aviso, toque em <strong>"Permitir"</strong></li>
+                <li>O app será baixado e instalado automaticamente</li>
+                <li><strong>IMPORTANTE:</strong> Se aparecer erro de "integridade não pode ser verificada":</li>
+                <ol style="margin-top: 10px; margin-bottom: 10px;">
+                    <li>Vá em <strong>Ajustes > Geral > VPN e Gerenciamento de Dispositivos</strong></li>
+                    <li>Procure pelo certificado do desenvolvedor (pode aparecer como "GUILHERME SANTOS" ou similar)</li>
+                    <li>Toque no certificado</li>
+                    <li>Toque em <strong>"Confiar no desenvolvedor"</strong></li>
+                    <li>Confirme tocando em <strong>"Confiar"</strong></li>
+                    <li>Volte e tente instalar novamente</li>
+                </ol>
+                <li>Pronto! O app estará disponível na tela inicial</li>
+            </ol>
+        </div>
+        
+        <div class="auto-register">
+            <h2>🚀 Registro Automático</h2>
+            <p style="color: #cbd5e1; margin-bottom: 15px;">Registre seu dispositivo automaticamente e gere um build personalizado:</p>
+            
+            <input 
+                type="text" 
+                id="udidInput" 
+                class="udid-input" 
+                placeholder="Cole aqui o UDID do seu iPhone (Ajustes > Geral > Sobre > Identificador)"
+                maxlength="40"
+            />
+            
+            <div style="margin-top: 15px;">
+                <button id="registerDeviceBtn" class="action-button">
+                    📱 Registrar Dispositivo
+                </button>
+                <button id="triggerBuildBtn" class="action-button" disabled>
+                    🚀 Gerar Build
+                </button>
+            </div>
+            
+            <div id="statusMessage" class="status-message"></div>
+            
+            <p style="color: #94a3b8; margin-top: 15px; font-size: 14px;">
+                💡 <strong>Como obter o UDID:</strong> Ajustes > Geral > Sobre > Identificador (toque para copiar)
+            </p>
+        </div>
+        
+        <div class="instructions" style="margin-top: 20px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);">
+            <h2 style="color: #3b82f6;">📱 Informações</h2>
+            <p style="color: #cbd5e1; margin-bottom: 10px;">O registro automático faz tudo por você:</p>
+            <ol style="color: #cbd5e1;">
+                <li><strong>Registra o dispositivo</strong> no Apple Developer Program</li>
+                <li><strong>Gera um build personalizado</strong> com seu dispositivo incluído</li>
+                <li><strong>Atualiza a página</strong> quando o build estiver pronto</li>
+            </ol>
+            <p style="color: #94a3b8; margin-top: 10px; font-size: 14px;">⏱️ O processo pode levar 5-15 minutos. Você será notificado quando estiver pronto!</p>
+        </div>
+        
+        <div class="instructions" style="margin-top: 20px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3);">
+            <h2 style="color: #ffc107;">⚠️ Erro de Integridade?</h2>
+            <p style="color: #cbd5e1; margin-bottom: 10px;">Se você está recebendo o erro "integridade não pode ser verificada":</p>
+            <ol style="color: #cbd5e1;">
+                <li><strong>Dispositivo não registrado:</strong> O dispositivo precisa estar registrado antes do build</li>
+                <li><strong>Verifique o .ipa:</strong> O arquivo .ipa deve estar acessível e válido</li>
+                <li><strong>Confie no certificado:</strong> Após o app ser instalado, vá em Ajustes > Geral > VPN e Gerenciamento de Dispositivos > Confiar no desenvolvedor</li>
+                <li><strong>Nota:</strong> O certificado só aparece DEPOIS que o app é instalado. Se não aparece, o app não foi instalado ainda.</li>
+            </ol>
+        </div>
+        
+        <div class="version">
+            Versão 1.0.0
+        </div>
+    </div>
+    
+    <script>
+        // Detectar se é iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        // Se for iOS, mostrar instruções específicas
+        if (isIOS) {
+            console.log('✅ Dispositivo iOS detectado');
+        }
+        
+        // Elementos do DOM
+        const udidInput = document.getElementById('udidInput');
+        const registerDeviceBtn = document.getElementById('registerDeviceBtn');
+        const triggerBuildBtn = document.getElementById('triggerBuildBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        let currentUDID = null;
+        
+        // Função para mostrar mensagem de status
+        function showStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message show ${type}`;
+            statusMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Função para esconder mensagem de status
+        function hideStatus() {
+            statusMessage.className = 'status-message';
+        }
+        
+        // Função para desabilitar botões durante processamento
+        function setLoading(loading) {
+            registerDeviceBtn.disabled = loading;
+            triggerBuildBtn.disabled = loading || !currentUDID;
+            
+            if (loading) {
+                registerDeviceBtn.innerHTML = '<span class="loading"></span> Processando...';
+            } else {
+                registerDeviceBtn.innerHTML = '📱 Registrar Dispositivo';
+            }
+        }
+        
+        // Registrar dispositivo
+        registerDeviceBtn.addEventListener('click', async () => {
+            const udid = udidInput.value.trim();
+            
+            if (!udid) {
+                showStatus('⚠️ Por favor, insira o UDID do seu dispositivo', 'error');
+                return;
+            }
+            
+            // Validar formato básico do UDID (40 caracteres hexadecimais)
+            if (udid.length < 25) {
+                showStatus('⚠️ UDID inválido. Verifique se copiou corretamente.', 'error');
+                return;
+            }
+            
+            setLoading(true);
+            hideStatus();
+            
+            try {
+                const response = await fetch('/api/register-device', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        udid: udid,
+                        deviceName: `iPhone-${udid.slice(-8)}`
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentUDID = udid;
+                    triggerBuildBtn.disabled = false;
+                    showStatus(`✅ ${data.message}`, 'success');
+                } else {
+                    showStatus(`❌ Erro: ${data.error || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao registrar dispositivo:', error);
+                showStatus(`❌ Erro de conexão: ${error.message}`, 'error');
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        // Disparar build
+        triggerBuildBtn.addEventListener('click', async () => {
+            if (!currentUDID) {
+                showStatus('⚠️ Por favor, registre o dispositivo primeiro', 'error');
+                return;
+            }
+            
+            setLoading(true);
+            hideStatus();
+            
+            try {
+                const response = await fetch('/api/trigger-build', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        udid: currentUDID
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus(`✅ ${data.message}. ${data.note || ''}`, 'success');
+                    
+                    // Verificar status do build periodicamente
+                    if (data.buildId) {
+                        checkBuildStatus(currentUDID, data.buildId);
+                    }
+                } else {
+                    showStatus(`❌ Erro: ${data.error || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao disparar build:', error);
+                showStatus(`❌ Erro de conexão: ${error.message}`, 'error');
+            } finally {
+                setLoading(false);
+            }
+        });
+        
+        // Verificar status do build periodicamente
+        async function checkBuildStatus(udid, buildId) {
+            const maxAttempts = 60; // 60 tentativas = 5 minutos (5s cada)
+            let attempts = 0;
+            
+            const interval = setInterval(async () => {
+                attempts++;
+                
+                try {
+                    const response = await fetch(`/api/build-status/${udid}`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.status === 'completed') {
+                        clearInterval(interval);
+                        showStatus('✅ Build concluído! O app está pronto para instalação.', 'success');
+                        // Recarregar página após 3 segundos
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        showStatus('⏱️ Build ainda em andamento. Verifique novamente em alguns minutos.', 'info');
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar status do build:', error);
+                }
+            }, 5000); // Verificar a cada 5 segundos
+        }
+        
+        // Permitir Enter no input
+        udidInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                registerDeviceBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,12 @@
+# Configuração para servir manifest.plist corretamente
+<IfModule mod_mime.c>
+  AddType application/xml plist
+  AddType application/octet-stream ipa
+</IfModule>
+
+# Headers para permitir instalação OTA
+<IfModule mod_headers.c>
+  Header set Content-Type "application/xml" env=PLIST
+  Header set Content-Disposition "attachment; filename=manifest.plist" env=PLIST
+</IfModule>
+
